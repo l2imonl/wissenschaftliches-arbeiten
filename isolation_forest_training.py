@@ -1,7 +1,18 @@
+"""Feature extraction and anomaly detection for Zigbee traffic.
+
+The script reads ``dataset/zboss.csv`` exported via ``tshark`` with the
+columns ``frame.time_epoch``, ``wpan.frame_type``, ``wpan.seq_no``,
+``wpan.src16``, ``wpan.dst16`` and ``frame.len``. It computes sliding-window
+statistics and trains an Isolation Forest. The resulting features are written
+to ``features/zigbee_features.csv`` and labels to ``labels/labels.csv``.
+"""
+
 import os
 import numpy as np
 import pandas as pd
 from sklearn.ensemble import IsolationForest
+
+DATASET_CSV = "dataset/zboss.csv"
 
 # Parameters for the sliding window
 WINDOW_SIZE = 5   # seconds
@@ -10,11 +21,15 @@ STEP_SIZE = 1     # seconds
 # 1. CSV einlesen mit erweiterten Spalten
 # Erwartet: frame.time_epoch, wpan.frame_type, wpan.seq_no, wpan.src16, wpan.dst16, frame.len
 
-df = pd.read_csv("dataset/zboss.csv")
+df = pd.read_csv(DATASET_CSV)
 
 # Stelle sicher, dass die Zeitspalte numerisch ist
 if not np.issubdtype(df["frame.time_epoch"].dtype, np.number):
     df["frame.time_epoch"] = df["frame.time_epoch"].astype(float)
+if not np.issubdtype(df["wpan.seq_no"].dtype, np.number):
+    df["wpan.seq_no"] = pd.to_numeric(df["wpan.seq_no"], errors="coerce")
+if not np.issubdtype(df["frame.len"].dtype, np.number):
+    df["frame.len"] = pd.to_numeric(df["frame.len"], errors="coerce")
 
 # Einmal global sortieren
 df.sort_values("frame.time_epoch", inplace=True)
@@ -26,10 +41,9 @@ start_time = df["frame.time_epoch"].min()
 end_time = df["frame.time_epoch"].max()
 
 features_list = []
-current = start_time
 bin_id = 0
 
-while current <= end_time:
+for current in np.arange(start_time, end_time + STEP_SIZE, STEP_SIZE):
     window_mask = (df["frame.time_epoch"] >= current) & (df["frame.time_epoch"] < current + WINDOW_SIZE)
     window_df = df[window_mask]
 
@@ -69,8 +83,6 @@ while current <= end_time:
             feat[f"ftype_{int(ft)}_count"] = 0
 
     features_list.append(feat)
-
-    current += STEP_SIZE
     bin_id += 1
 
 features = pd.DataFrame(features_list)
