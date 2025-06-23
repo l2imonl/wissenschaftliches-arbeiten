@@ -12,7 +12,8 @@ labels   = pd.read_csv("labels/labels.csv")
 data = features.merge(labels, on="time_bin", how="inner")
 
 # 3. X und y definieren
-feature_cols = ["pkt_count", "pkt_len_mean", "pkt_len_std", "distinct_src", "distinct_dst"]
+# Alle Feature-Spalten außer time_bin und label verwenden
+feature_cols = [c for c in data.columns if c not in ("time_bin", "label")]
 X = data[feature_cols]
 y = data["label"]
 
