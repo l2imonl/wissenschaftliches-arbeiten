@@ -44,6 +44,8 @@ Dieses Repository enthält ein Python-Skript, das aus einem Zigbee-Traffic-Daten
     -Y "wpan" \
     -T fields \
     -e frame.time_epoch \
+    -e wpan.frame_type \
+    -e wpan.seq_no \
     -e wpan.src16 \
     -e wpan.dst16 \
     -e frame.len \
