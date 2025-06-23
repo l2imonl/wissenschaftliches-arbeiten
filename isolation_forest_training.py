@@ -26,10 +26,17 @@ df = pd.read_csv(DATASET_CSV)
 # Stelle sicher, dass die Zeitspalte numerisch ist
 if not np.issubdtype(df["frame.time_epoch"].dtype, np.number):
     df["frame.time_epoch"] = df["frame.time_epoch"].astype(float)
-if not np.issubdtype(df["wpan.seq_no"].dtype, np.number):
-    df["wpan.seq_no"] = pd.to_numeric(df["wpan.seq_no"], errors="coerce")
-if not np.issubdtype(df["frame.len"].dtype, np.number):
-    df["frame.len"] = pd.to_numeric(df["frame.len"], errors="coerce")
+
+# Einige Spalten können hexadezimale Strings enthalten (z.B. "0x0001").
+def _to_int(val):
+    try:
+        return int(str(val), 0)
+    except (ValueError, TypeError):
+        return np.nan
+
+df["wpan.frame_type"] = df["wpan.frame_type"].apply(_to_int)
+df["wpan.seq_no"] = df["wpan.seq_no"].apply(_to_int)
+df["frame.len"] = pd.to_numeric(df["frame.len"], errors="coerce")
 
 # Einmal global sortieren
 df.sort_values("frame.time_epoch", inplace=True)
