@@ -1,10 +1,11 @@
 """Feature extraction and anomaly detection for Zigbee traffic.
 
-The script reads ``dataset/zboss.csv`` exported via ``tshark`` with the
+The script reads a CSV exported via ``tshark`` with the
 columns ``frame.time_epoch``, ``wpan.frame_type``, ``wpan.seq_no``,
 ``wpan.src16``, ``wpan.dst16`` and ``frame.len``. It computes sliding-window
 statistics and trains an Isolation Forest. The resulting features are written
 to ``features/zigbee_features.csv`` and labels to ``labels/labels.csv``.
+The CSV path can be specified with ``--csv`` (default: ``dataset/zboss.csv``).
 """
 
 import os
@@ -12,7 +13,17 @@ import numpy as np
 import pandas as pd
 from sklearn.ensemble import IsolationForest
 
-DATASET_CSV = "dataset/zboss.csv"
+import argparse
+
+parser = argparse.ArgumentParser(description="Extract features and detect anomalies in Zigbee traffic")
+parser.add_argument(
+    "--csv",
+    default="dataset/zboss.csv",
+    help="Path to the CSV exported by tshark"
+)
+args = parser.parse_args()
+
+DATASET_CSV = args.csv
 
 # Parameters for the sliding window
 WINDOW_SIZE = 5   # seconds

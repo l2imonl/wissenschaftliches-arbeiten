@@ -55,7 +55,8 @@ Dieses Repository enthält ein Python-Skript, das aus einem Zigbee-Traffic-Daten
 
 2. Anomalie-Labels erzeugen
     ```bash
-    python isolation_forest_training.py
+    # optional: CSV-Pfad angeben
+    python isolation_forest_training.py --csv dataset/zboss.csv
     ```
    
 - Ergebnis: features/zigbee_features.csv und labels/labels.csv
