@@ -58,6 +58,9 @@ data_df = df[df["wpan.frame_type"] == 1]
 
 candidates = []
 for addr, grp in data_df.groupby("wpan.src16"):
+    if pd.isna(addr):
+        continue
+    addr_int = int(addr)
     times = grp["frame.time_epoch"].values
     if len(times) < 2 or len(times) > args.max_count:
         continue
@@ -65,7 +68,7 @@ for addr, grp in data_df.groupby("wpan.src16"):
     avg_gap = gaps.mean()
     if avg_gap >= args.min_gap:
         candidates.append({
-            "addr": addr,
+            "addr": addr_int,
             "count": len(times),
             "avg_gap": avg_gap,
             "med_gap": np.median(gaps),
