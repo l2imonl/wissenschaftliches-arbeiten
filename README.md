@@ -61,11 +61,12 @@ Dieses Repository enthält ein Python-Skript, das aus einem Zigbee-Traffic-Daten
 
 - Ergebnis: features/zigbee_features.csv und labels/labels.csv
 
-2a. Türsensor-Adresse ermitteln
+2a. Fenstersensor-Adresse ermitteln
     ```bash
-    python identify_door_sensors.py --csv dataset/zboss.csv
+    python identify_window_sensors.py --csv dataset/zboss.csv --min-gap 60 --max-dst 1
     ```
     - Gibt Kandidaten-Adressen sortiert nach durchschnittlicher Sendehäufigkeit aus
+    - Zusätzliche Parameter wie `--max-frame-len` und `--min-cv` filtern Geräte mit untypischem Verhalten
 
 2b. "Haustür geöffnet"-Labels erzeugen
     ```bash
