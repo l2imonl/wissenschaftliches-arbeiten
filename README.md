@@ -58,8 +58,21 @@ Dieses Repository enthält ein Python-Skript, das aus einem Zigbee-Traffic-Daten
     # optional: CSV-Pfad angeben
     python isolation_forest_training.py --csv dataset/zboss.csv
     ```
-   
+
 - Ergebnis: features/zigbee_features.csv und labels/labels.csv
+
+2a. Türsensor-Adresse ermitteln
+    ```bash
+    python identify_door_sensors.py --csv dataset/zboss.csv
+    ```
+    - Gibt Kandidaten-Adressen sortiert nach durchschnittlicher Sendehäufigkeit aus
+
+2b. "Haustür geöffnet"-Labels erzeugen
+    ```bash
+    python generate_door_labels.py --door-src 0x1234
+    ```
+    - Erwartet die Zigbee-Adresse des Türsensors als Hex-Wert
+    - Schreibt Labels in `labels/door_labels.csv`
 
 3. Random Forest trainieren
     ```bash
