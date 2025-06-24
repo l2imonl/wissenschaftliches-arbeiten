@@ -26,12 +26,12 @@ Dieses Repository enthält ein Python-Skript, das aus einem Zigbee-Traffic-Daten
 
 ```
 ├── dataset/
-│   └── zboss.csv             # Roh-CSV mit Spalten: frame.time_epoch, wpan.src16, wpan.dst16, frame.len
+│   └── zboss.csv             # Roh-CSV mit Spalten: frame.time_epoch, wpan.frame_type, wpan.seq_no, wpan.src16, wpan.dst16, frame.len
 ├── features/
-│   └── zigbee_features.csv   # (wird erzeugt) aggregierte Features pro 10-Sekunden-Bin
+│   └── zigbee_features.csv   # (wird erzeugt) aggregierte Features pro 5‑Sekunden-Fenster (Schrittweite 1 Sekunde)
 ├── labels/
 │   └── labels.csv            # (wird erzeugt) time_bin + label (0 = normal, 1 = Anomalie)
-└── anomaly_labeling.py       # Hauptskript
+└── isolation_forest_training.py  # Hauptskript
 ```
 
 ## Usage
@@ -44,6 +44,8 @@ Dieses Repository enthält ein Python-Skript, das aus einem Zigbee-Traffic-Daten
     -Y "wpan" \
     -T fields \
     -e frame.time_epoch \
+    -e wpan.frame_type \
+    -e wpan.seq_no \
     -e wpan.src16 \
     -e wpan.dst16 \
     -e frame.len \
@@ -53,7 +55,8 @@ Dieses Repository enthält ein Python-Skript, das aus einem Zigbee-Traffic-Daten
 
 2. Anomalie-Labels erzeugen
     ```bash
-    python anomaly_labeling.py
+    # optional: CSV-Pfad angeben
+    python isolation_forest_training.py --csv dataset/zboss.csv
     ```
    
 - Ergebnis: features/zigbee_features.csv und labels/labels.csv
