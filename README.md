@@ -65,7 +65,8 @@ Dieses Repository enthält ein Python-Skript, das aus einem Zigbee-Traffic-Daten
     ```bash
     python identify_door_sensors.py --csv dataset/zboss.csv
     ```
-    - Gibt Kandidaten-Adressen sortiert nach durchschnittlicher Sendehäufigkeit aus
+    - Erkennt Geräte, die regelmäßig zwei Pakete kurz hintereinander schicken
+    - Listet Kandidaten sortiert nach Anzahl dieser "Burst"-Paare
 
 2b. "Haustür geöffnet"-Labels erzeugen
     ```bash
