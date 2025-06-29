@@ -75,6 +75,12 @@ Dieses Repository enthält ein Python-Skript, das aus einem Zigbee-Traffic-Daten
     - Erwartet die Zigbee-Adresse des Türsensors als Hex-Wert
     - Schreibt Labels in `labels/door_labels.csv`
 
+2c. Steckdosen erkennen
+    ```bash
+    python identify_outlet_devices.py --csv dataset/zboss.csv
+    ```
+    - Listet mögliche Steckdosen-Adressen nach Paketanzahl und Sendeintervall
+
 3. Random Forest trainieren
     ```bash
     python train_rf.py
